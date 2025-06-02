@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useEffect, useRef } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useEffect, useRef, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -47,7 +47,7 @@ function SubmitButton() {
 }
 
 export default function ServiceRequestForm() {
-  const [state, formAction] = useFormState(submitServiceRequestAction, initialState);
+  const [state, formAction] = useActionState(submitServiceRequestAction, initialState);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
 
