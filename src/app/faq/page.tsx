@@ -1,3 +1,4 @@
+
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Lightbulb } from "lucide-react";
@@ -53,4 +54,6 @@ export default function FaqPage() {
           </Accordion>
         </CardContent>
       </Card>
-    
+    </div>
+  );
+}

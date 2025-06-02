@@ -130,25 +130,26 @@ export async function loginAction(prevState: LoginState, formData: FormData): Pr
   if (!parseResult.success) {
     return {
       success: false,
-      message: "Invalid email or password format.",
+      message: "Invalid email or password format. Please check your input.",
     };
   }
 
-  const { email, password } = parseResult.data;
+  const email = parseResult.data.email.trim(); // Trim email
+  const password = parseResult.data.password; // Password should be exact
 
   if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-    cookies().set(SESSION_COOKIE_NAME, "true", { // In a real app, this value would be a secure token
+    cookies().set(SESSION_COOKIE_NAME, "true", { 
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24 * 7, // 1 week
       path: '/',
       sameSite: 'lax',
     });
-    redirect('/admin'); // Redirect after successful login
+    redirect('/admin'); 
   } else {
     return {
       success: false,
-      message: "Invalid email or password.",
+      message: "Invalid email or password. Please double-check your credentials and try again.",
     };
   }
 }
@@ -157,3 +158,4 @@ export async function logoutAction() {
   cookies().delete(SESSION_COOKIE_NAME);
   redirect('/login');
 }
+
