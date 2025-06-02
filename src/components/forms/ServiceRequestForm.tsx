@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { submitServiceRequestAction, ServiceRequestFormState } from '@/lib/actions';
 import { applianceTypes, ApplianceType, ServiceRequest } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
-import { addOrder as addOrderToStore } from '@/lib/orderStore'; // Client-side localStorage utility
+import { addOrder as addOrderToStore } from '@/lib/orderStore';
 import { Loader2, Send, Smile, Frown } from 'lucide-react';
 
 const formSchema = z.object({
@@ -48,6 +49,7 @@ function SubmitButton() {
 export default function ServiceRequestForm() {
   const [state, formAction] = useFormState(submitServiceRequestAction, initialState);
   const { toast } = useToast();
+  const formRef = useRef<HTMLFormElement>(null);
 
   const form = useForm<ServiceRequestFormData>({
     resolver: zodResolver(formSchema),
@@ -70,11 +72,9 @@ export default function ServiceRequestForm() {
         action: state.success ? <Smile className="text-green-500" /> : <Frown className="text-red-500" />,
       });
       if (state.success && state.fields) {
-        // Add to client-side localStorage after successful server action
-        // The server action returns the data needed to construct the full ServiceRequest object.
         const newOrderData = state.fields as unknown as Omit<ServiceRequest, 'id' | 'createdAt' | 'updatedAt' | 'status'>;
         addOrderToStore(newOrderData);
-        form.reset(); // Reset form on success
+        form.reset();
       }
     }
     if (state.issues) {
@@ -85,13 +85,22 @@ export default function ServiceRequestForm() {
     }
   }, [state, toast, form]);
 
+  const onValidRHFSubmit = () => {
+    if (formRef.current) {
+      formAction(new FormData(formRef.current));
+    }
+  };
+
   return (
     <Card className="w-full max-w-2xl mx-auto shadow-2xl">
       <CardHeader>
         <CardTitle className="text-3xl font-headline">Request Appliance Service</CardTitle>
         <CardDescription>Fill out the form below, and we'll get back to you shortly.</CardDescription>
       </CardHeader>
-      <form action={formAction} onSubmit={form.handleSubmit(()=>formAction(new FormData(form.control._form DržaveHTML)))}>
+      <form
+        ref={formRef}
+        onSubmit={form.handleSubmit(onValidRHFSubmit)}
+      >
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -136,7 +145,7 @@ export default function ServiceRequestForm() {
               {form.formState.errors.contactEmail && <p className="text-sm text-destructive mt-1">{form.formState.errors.contactEmail.message}</p>}
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <Label htmlFor="contactPhone">Phone Number</Label>

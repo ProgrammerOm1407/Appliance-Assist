@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -42,6 +43,7 @@ function SubmitButton() {
 export default function DiagnosisForm() {
   const [state, formAction] = useFormState(diagnoseIssueAction, initialState);
   const { toast } = useToast();
+  const formRef = useRef<HTMLFormElement>(null);
 
   const form = useForm<DiagnosisFormData>({
     resolver: zodResolver(formSchema),
@@ -52,20 +54,26 @@ export default function DiagnosisForm() {
   });
 
   useEffect(() => {
-    if (state.message && !state.success) { // Only show toast for errors or non-diagnosis messages
+    if (state.message && !state.success) {
       toast({
         title: state.success ? "Diagnosis Ready" : "Info",
         description: state.message,
         variant: state.success ? "default" : "destructive",
       });
     }
-     if (state.issues) { // Populate form errors
+     if (state.issues) {
        state.issues.forEach(issue => {
          const [path, message] = issue.split(': ');
          form.setError(path as keyof DiagnosisFormData, { type: 'manual', message });
        });
     }
   }, [state, toast, form]);
+
+  const onValidRHFSubmit = () => {
+    if (formRef.current) {
+      formAction(new FormData(formRef.current));
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -74,7 +82,10 @@ export default function DiagnosisForm() {
           <CardTitle className="text-3xl font-headline">AI-Powered Issue Diagnosis</CardTitle>
           <CardDescription>Describe your appliance issue, and our AI will suggest possible causes. This is not a substitute for professional technician advice.</CardDescription>
         </CardHeader>
-        <form action={formAction} onSubmit={form.handleSubmit(()=>formAction(new FormData(form.control._form DržaveHTML)))}>
+        <form
+          ref={formRef}
+          onSubmit={form.handleSubmit(onValidRHFSubmit)}
+        >
           <CardContent className="space-y-6">
             <div>
               <Label htmlFor="applianceType">Appliance Type</Label>
