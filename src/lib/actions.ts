@@ -138,7 +138,7 @@ export async function loginAction(prevState: LoginState, formData: FormData): Pr
   const password = parseResult.data.password; // Password should be exact
 
   if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-    cookies().set(SESSION_COOKIE_NAME, "true", { 
+    (await cookies()).set(SESSION_COOKIE_NAME, "true", { 
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24 * 7, // 1 week
@@ -155,7 +155,7 @@ export async function loginAction(prevState: LoginState, formData: FormData): Pr
 }
 
 export async function logoutAction() {
-  cookies().delete(SESSION_COOKIE_NAME);
+  (await cookies()).delete(SESSION_COOKIE_NAME);
   redirect('/login');
 }
 

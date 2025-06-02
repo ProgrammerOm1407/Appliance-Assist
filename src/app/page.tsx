@@ -65,7 +65,7 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-      
+
       {/* Why Choose Us Section */}
       <section className="py-12 md:py-16 bg-secondary/50 rounded-xl">
         <div className="container mx-auto px-4">
@@ -88,16 +88,17 @@ export default function HomePage() {
         <div className="grid md:grid-cols-3 gap-8 items-start">
           <div className="text-center p-4 sm:p-6">
             <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-4">
-               <Image src="https://placehold.co/300x300.png" alt="Fill out service request" layout="fill" objectFit="cover" className="rounded-full shadow-lg" data-ai-hint="form writing" />
+              <Image src="https://placehold.co/300x300.png" alt="Fill out service request" layout="fill" objectFit="cover" className="rounded-full shadow-lg" data-ai-hint="form writing" />
             </div>
             <h3 className="text-xl sm:text-2xl font-headline font-medium mb-1 sm:mb-2">1. Submit Request</h3>
             <p className="text-sm sm:text-base text-foreground/70 font-body">Fill out our simple online service request form with your appliance details.</p>
           </div>
           <div className="text-center p-4 sm:p-6">
-             <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-4">
-               <Image src="https://placehold.co/300x300.png" alt="Book Service" layout="fill" objectFit="cover" className="rounded-full shadow-lg" data-ai-hint="calendar schedule" />
+            <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-4">
+              <Image src="https://placehold.co/300x300.png" alt="Book Service" layout="fill" objectFit="cover" className="rounded-full shadow-lg" data-ai-hint="calendar schedule" />
+            </div>
           </div>
-        </div>
+          </div>
       </section>
     </div>
   );
