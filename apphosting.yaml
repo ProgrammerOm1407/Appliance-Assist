@@ -1,7 +1,16 @@
 # Settings to manage and configure a Firebase App Hosting backend.
 # https://firebase.google.com/docs/app-hosting/configure
 
+# Command to build your app
+buildConfig:
+  command: npm run build
+
+# Command to run your app
+entrypoint: npm run start
+
 runConfig:
   # Increase this value if you'd like to automatically spin up
   # more instances in response to increased traffic.
   maxInstances: 1
+  # For production, ensure any required environment variables (e.g., API keys for Genkit)
+  # are configured in your Firebase project settings or through the gcloud CLI.
