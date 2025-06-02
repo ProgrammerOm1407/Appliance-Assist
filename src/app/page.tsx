@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Wrench, BrainCircuit, MapPin, HelpCircle, ChevronRight, Sparkles, CheckCircle, Clock } from 'lucide-react';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 
 const features = [
   {
