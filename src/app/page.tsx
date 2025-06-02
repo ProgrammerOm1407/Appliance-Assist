@@ -82,6 +82,7 @@ export default function HomePage() {
         </div>
       </section>
 
+
       {/* How It Works Section */}
       <section>
         <h2 className="text-3xl sm:text-4xl font-headline font-semibold text-center mb-10 md:mb-12">Simple & Easy Process</h2>
