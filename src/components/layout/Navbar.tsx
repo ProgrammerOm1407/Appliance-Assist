@@ -10,8 +10,6 @@ import { Home, Wrench, BrainCircuit, MapPin, HelpCircle, LayoutDashboard } from 
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/request-service', label: 'Request Service', icon: Wrench },
-  { href: '/diagnose', label: 'Diagnose Issue', icon: BrainCircuit },
-  { href: '/service-area', label: 'Service Area', icon: MapPin },
   { href: '/faq', label: 'FAQ', icon: HelpCircle },
   { href: '/admin', label: 'Admin', icon: LayoutDashboard }, // Changed href to /admin
 ];

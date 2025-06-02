@@ -5,9 +5,6 @@
 - Request Submission: Service Request Form: Users submit repair requests including appliance type, issue description, and contact information.
 - Order Management: Order Management: Allows the owner to view and manage service requests.
 - Status Updates: Order Status Updates: Customers receive automatic notifications when their repair status changes (e.g., pending, completed).
-- Issue Diagnosis: AI-Powered Issue Diagnosis Tool: Based on the customer's issue description, this tool suggests possible causes of appliance malfunction. Note that a technician should independently verify the tool's output.
-- Service Locator: Service Area Locator: Allows users to verify service availability based on their location.
-- Troubleshooting Guide: FAQ and Troubleshooting Guide: Provides self-service troubleshooting steps for common appliance issues.
 
 ## Style Guidelines:
 

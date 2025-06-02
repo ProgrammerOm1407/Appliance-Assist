@@ -8,31 +8,10 @@ import Image from "next/legacy/image";
 const features = [
   {
     title: "Request Service",
-    description: "Book a repair for your appliance quickly and easily.",
+    description: "Easily book a repair for your appliance with our simple online form.",
     icon: Wrench,
     href: "/request-service",
     cta: "Book Now"
-  },
-  {
-    title: "AI Issue Diagnosis",
-    description: "Get an AI-powered preliminary diagnosis for your appliance issues.",
-    icon: BrainCircuit,
-    href: "/diagnose",
-    cta: "Diagnose Now"
-  },
-  {
-    title: "Service Area Check",
-    description: "Verify if our expert technicians serve your location.",
-    icon: MapPin,
-    href: "/service-area",
-    cta: "Check Area"
-  },
-  {
-    title: "FAQ & Troubleshooting",
-    description: "Find answers to common questions and DIY troubleshooting tips.",
-    icon: HelpCircle,
-    href: "/faq",
-    cta: "Learn More"
   },
 ];
 
@@ -109,24 +88,14 @@ export default function HomePage() {
         <div className="grid md:grid-cols-3 gap-8 items-start">
           <div className="text-center p-4 sm:p-6">
             <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-4">
-               <Image src="https://placehold.co/300x300.png" alt="Describe Issue" layout="fill" objectFit="cover" className="rounded-full shadow-lg" data-ai-hint="gears tools" />
+               <Image src="https://placehold.co/300x300.png" alt="Fill out service request" layout="fill" objectFit="cover" className="rounded-full shadow-lg" data-ai-hint="form writing" />
             </div>
-            <h3 className="text-xl sm:text-2xl font-headline font-medium mb-1 sm:mb-2">1. Describe Your Issue</h3>
-            <p className="text-sm sm:text-base text-foreground/70 font-body">Tell us about the problem or use our AI tool for a quick diagnosis.</p>
+            <h3 className="text-xl sm:text-2xl font-headline font-medium mb-1 sm:mb-2">1. Submit Request</h3>
+            <p className="text-sm sm:text-base text-foreground/70 font-body">Fill out our simple online service request form with your appliance details.</p>
           </div>
           <div className="text-center p-4 sm:p-6">
              <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-4">
                <Image src="https://placehold.co/300x300.png" alt="Book Service" layout="fill" objectFit="cover" className="rounded-full shadow-lg" data-ai-hint="calendar schedule" />
-            </div>
-            <h3 className="text-xl sm:text-2xl font-headline font-medium mb-1 sm:mb-2">2. Book a Service</h3>
-            <p className="text-sm sm:text-base text-foreground/70 font-body">Choose a convenient time for our technician to visit.</p>
-          </div>
-          <div className="text-center p-4 sm:p-6">
-             <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-4">
-               <Image src="https://placehold.co/300x300.png" alt="Get It Fixed" layout="fill" objectFit="cover" className="rounded-full shadow-lg" data-ai-hint="appliance repair" />
-            </div>
-            <h3 className="text-xl sm:text-2xl font-headline font-medium mb-1 sm:mb-2">3. Get It Fixed</h3>
-            <p className="text-sm sm:text-base text-foreground/70 font-body">Our expert technicians will resolve the issue efficiently.</p>
           </div>
         </div>
       </section>
