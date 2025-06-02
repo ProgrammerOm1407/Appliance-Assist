@@ -39,7 +39,7 @@ const initialState: ServiceRequestFormState = {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} className="w-full md:w-auto">
+    <Button type="submit" disabled={pending} className="w-full md:w-auto text-sm sm:text-base">
       {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
       Submit Request
     </Button>
@@ -74,7 +74,7 @@ export default function ServiceRequestForm() {
       if (state.success && state.fields) {
         const newOrderData = state.fields as unknown as Omit<ServiceRequest, 'id' | 'createdAt' | 'updatedAt' | 'status'>;
         addOrderToStore(newOrderData);
-        form.reset();
+        form.reset(); 
       }
     }
     if (state.issues) {
@@ -85,27 +85,37 @@ export default function ServiceRequestForm() {
     }
   }, [state, toast, form]);
 
-  const onValidRHFSubmit = () => {
-    if (formRef.current) {
-      formAction(new FormData(formRef.current));
+  const onValidRHFSubmit = (data: ServiceRequestFormData) => {
+     if (formRef.current) {
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, String(value));
+        }
+      });
+      formAction(formData);
     }
   };
 
   return (
     <Card className="w-full max-w-2xl mx-auto shadow-2xl">
       <CardHeader>
-        <CardTitle className="text-3xl font-headline">Request Appliance Service</CardTitle>
-        <CardDescription>Fill out the form below, and we'll get back to you shortly.</CardDescription>
+        <CardTitle className="text-2xl sm:text-3xl font-headline">Request Appliance Service</CardTitle>
+        <CardDescription className="text-sm sm:text-base">Fill out the form below, and we'll get back to you shortly.</CardDescription>
       </CardHeader>
       <form
         ref={formRef}
         onSubmit={form.handleSubmit(onValidRHFSubmit)}
       >
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <CardContent className="space-y-4 sm:space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <Label htmlFor="applianceType">Appliance Type</Label>
-              <Select name="applianceType" onValueChange={(value) => form.setValue('applianceType', value as ApplianceType)}>
+              <Select 
+                name="applianceType" 
+                onValueChange={(value) => form.setValue('applianceType', value as ApplianceType, { shouldValidate: true })}
+                value={form.watch('applianceType')}
+                >
                 <SelectTrigger id="applianceType">
                   <SelectValue placeholder="Select appliance" />
                 </SelectTrigger>
@@ -125,7 +135,6 @@ export default function ServiceRequestForm() {
             <Label htmlFor="issueDescription">Issue Description</Label>
             <Textarea
               id="issueDescription"
-              name="issueDescription"
               placeholder="Describe the problem in detail..."
               {...form.register('issueDescription')}
               rows={4}
@@ -133,33 +142,33 @@ export default function ServiceRequestForm() {
             {form.formState.errors.issueDescription && <p className="text-sm text-destructive mt-1">{form.formState.errors.issueDescription.message}</p>}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <Label htmlFor="contactName">Full Name</Label>
-              <Input id="contactName" name="contactName" placeholder="John Doe" {...form.register('contactName')} />
+              <Input id="contactName" placeholder="John Doe" {...form.register('contactName')} />
               {form.formState.errors.contactName && <p className="text-sm text-destructive mt-1">{form.formState.errors.contactName.message}</p>}
             </div>
             <div>
               <Label htmlFor="contactEmail">Email Address</Label>
-              <Input id="contactEmail" name="contactEmail" type="email" placeholder="you@example.com" {...form.register('contactEmail')} />
+              <Input id="contactEmail" type="email" placeholder="you@example.com" {...form.register('contactEmail')} />
               {form.formState.errors.contactEmail && <p className="text-sm text-destructive mt-1">{form.formState.errors.contactEmail.message}</p>}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <Label htmlFor="contactPhone">Phone Number</Label>
-              <Input id="contactPhone" name="contactPhone" type="tel" placeholder=" (555) 123-4567" {...form.register('contactPhone')} />
+              <Input id="contactPhone" type="tel" placeholder=" (555) 123-4567" {...form.register('contactPhone')} />
               {form.formState.errors.contactPhone && <p className="text-sm text-destructive mt-1">{form.formState.errors.contactPhone.message}</p>}
             </div>
              <div>
               <Label htmlFor="address">Service Address</Label>
-              <Input id="address" name="address" placeholder="123 Main St, City, State, ZIP" {...form.register('address')} />
+              <Input id="address" placeholder="123 Main St, City, State, ZIP" {...form.register('address')} />
               {form.formState.errors.address && <p className="text-sm text-destructive mt-1">{form.formState.errors.address.message}</p>}
             </div>
           </div>
         </CardContent>
-        <CardFooter className="flex justify-end">
+        <CardFooter>
           <SubmitButton />
         </CardFooter>
       </form>

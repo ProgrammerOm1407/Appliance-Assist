@@ -34,18 +34,18 @@ export default function FaqPage() {
     <div className="max-w-3xl mx-auto">
       <Card className="shadow-xl">
         <CardHeader className="text-center">
-          <Lightbulb className="mx-auto h-16 w-16 text-accent mb-4" />
-          <CardTitle className="text-4xl font-headline">FAQ & Troubleshooting</CardTitle>
-          <p className="text-muted-foreground font-body">Find answers to common questions and quick troubleshooting tips.</p>
+          <Lightbulb className="mx-auto h-12 w-12 sm:h-16 sm:w-16 text-accent mb-3 sm:mb-4" />
+          <CardTitle className="text-3xl sm:text-4xl font-headline">FAQ & Troubleshooting</CardTitle>
+          <p className="text-sm sm:text-base text-muted-foreground font-body">Find answers to common questions and quick troubleshooting tips.</p>
         </CardHeader>
         <CardContent>
           <Accordion type="single" collapsible className="w-full">
             {faqData.map((item, index) => (
               <AccordionItem value={`item-${index}`} key={index} className="border-b border-border/70 last:border-b-0">
-                <AccordionTrigger className="text-lg font-headline hover:no-underline text-left py-6">
+                <AccordionTrigger className="text-base sm:text-lg font-headline hover:no-underline text-left py-4 sm:py-6">
                   {item.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-base text-foreground/80 font-body pb-6 px-2">
+                <AccordionContent className="text-sm sm:text-base text-foreground/80 font-body pb-4 sm:pb-6 px-2">
                   {item.answer}
                 </AccordionContent>
               </AccordionItem>
@@ -53,6 +53,4 @@ export default function FaqPage() {
           </Accordion>
         </CardContent>
       </Card>
-    </div>
-  );
-}
+    
