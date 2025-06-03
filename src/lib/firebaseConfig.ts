@@ -6,12 +6,13 @@ import { getFirestore } from 'firebase/firestore';
 // IMPORTANT: Replace with your Firebase project's configuration
 // You can find this in your Firebase project settings
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+
+  apiKey: "AIzaSyAYuWTQ_QTr_wyFfdT2Wm4lTc4mLW-C9bQ",
+  authDomain: "appliance-assist-2kpf9.firebaseapp.com",
+  projectId: "appliance-assist-2kpf9",
+  storageBucket: "appliance-assist-2kpf9.firebasestorage.app",
+  messagingSenderId: "579988150133",
+  appId: "1:579988150133:web:86678f4c4a934f2e67653c"
 };
 
 // Initialize Firebase
