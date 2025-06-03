@@ -1,11 +1,15 @@
+
 "use client";
 import type { ServiceRequest, ApplianceType } from './types';
 
-const ORDERS_STORAGE_KEY = 'applianceAssistOrders';
+// This file now primarily serves as an example or for non-Firestore local storage if needed elsewhere.
+// The admin panel and main service request submission now use firebaseOrdersService.ts
+
+const ORDERS_STORAGE_KEY = 'applianceAssistOrders_local_backup'; // Renamed to avoid conflict if keeping
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
-export const getOrders = (): ServiceRequest[] => {
+export const getLocalOrders = (): ServiceRequest[] => {
   if (typeof window === 'undefined') return [];
   const storedOrders = localStorage.getItem(ORDERS_STORAGE_KEY);
   if (storedOrders) {
@@ -19,10 +23,9 @@ export const getOrders = (): ServiceRequest[] => {
   return [];
 };
 
-export const addOrder = (orderData: Omit<ServiceRequest, 'id' | 'createdAt' | 'updatedAt' | 'status'>): ServiceRequest => {
+export const addLocalOrder = (orderData: Omit<ServiceRequest, 'id' | 'createdAt' | 'updatedAt' | 'status'>): ServiceRequest => {
   if (typeof window === 'undefined') {
-    // This case should ideally not be hit if called from client components properly
-    console.warn("addOrder called on server. Order not added to localStorage.");
+    console.warn("addLocalOrder called on server. Order not added to localStorage.");
     const newOrder: ServiceRequest = {
       ...orderData,
       id: generateId(),
@@ -30,10 +33,10 @@ export const addOrder = (orderData: Omit<ServiceRequest, 'id' | 'createdAt' | 'u
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }
-    return newOrder; // Return the order, but it won't be persisted server-side by this function
+    return newOrder;
   }
 
-  const orders = getOrders();
+  const orders = getLocalOrders();
   const newOrder: ServiceRequest = {
     ...orderData,
     id: generateId(),
@@ -46,14 +49,17 @@ export const addOrder = (orderData: Omit<ServiceRequest, 'id' | 'createdAt' | 'u
   return newOrder;
 };
 
-export const updateOrder = (updatedOrder: ServiceRequest): ServiceRequest[] => {
+export const updateLocalOrder = (updatedOrder: ServiceRequest): ServiceRequest[] => {
   if (typeof window === 'undefined') return [];
-  const orders = getOrders();
+  const orders = getLocalOrders();
   const updatedOrders = orders.map(o => (o.id === updatedOrder.id ? { ...updatedOrder, updatedAt: new Date().toISOString() } : o));
   localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(updatedOrders));
   return updatedOrders;
 };
 
+/*
+// Mock data initialization is no longer primary. Data will come from Firestore.
+// Commenting out to prevent local storage population that might confuse with Firestore data.
 export const initializeMockOrders = () => {
   if (typeof window === 'undefined') return;
   const existingOrders = localStorage.getItem(ORDERS_STORAGE_KEY);
@@ -68,42 +74,17 @@ export const initializeMockOrders = () => {
         contactPhone: '555-1234',
         address: '123 Main St, Anytown, USA',
         status: 'pending',
-        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), 
         updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
         notes: "Customer reports intermittent cooling failure."
       },
-      {
-        id: 'mock2',
-        applianceType: 'washing-machine',
-        issueDescription: 'Leaking water from the bottom.',
-        contactName: 'Jane Smith',
-        contactEmail: 'jane.smith@example.com',
-        contactPhone: '555-5678',
-        address: '456 Oak Ave, Anytown, USA',
-        status: 'in-progress',
-        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-        updatedAt: new Date().toISOString(),
-        notes: "Technician assigned. Parts ordered."
-      },
-      {
-        id: 'mock3',
-        applianceType: 'filter',
-        issueDescription: 'Water filter needs replacement, flow is slow.',
-        contactName: 'Alice Brown',
-        contactEmail: 'alice.brown@example.com',
-        contactPhone: '555-8765',
-        address: '789 Pine Ln, Anytown, USA',
-        status: 'completed',
-        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
-        updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
-        notes: "Filter replaced. System flushed. Customer satisfied."
-      },
+      // ... other mock orders
     ];
     localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(mockOrders));
   }
 };
 
-// Initialize mock orders when this module is loaded on the client side
 if (typeof window !== 'undefined') {
-  initializeMockOrders();
+  // initializeMockOrders(); // No longer initializing by default
 }
+*/

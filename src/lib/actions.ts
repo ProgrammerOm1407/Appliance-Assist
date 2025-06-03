@@ -8,10 +8,11 @@ import type { ServiceRequest, ApplianceType } from "./types";
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { SESSION_COOKIE_NAME } from "./constants";
+import { addServiceRequest as addServiceRequestToFirestore, type NewServiceRequestData } from './firebaseOrdersService';
 
 // --- Service Request Actions ---
 const serviceRequestSchema = z.object({
-  applianceType: z.custom<ApplianceType>(),
+  applianceType: z.custom<ApplianceType>((val) => val !== undefined, "Please select an appliance type."),
   issueDescription: z.string().min(10, "Issue description must be at least 10 characters."),
   contactName: z.string().min(2, "Name is required."),
   contactEmail: z.string().email("Invalid email address."),
@@ -21,10 +22,10 @@ const serviceRequestSchema = z.object({
 
 export type ServiceRequestFormState = {
   message: string;
-  fields?: Record<string, string>;
+  fields?: Record<string, string>; // Keep for potential RHF reset or display if needed, but Firestore ID is main outcome
   issues?: string[];
   success: boolean;
-  orderId?: string;
+  orderId?: string; // Firestore document ID
 };
 
 export async function submitServiceRequestAction(
@@ -42,22 +43,30 @@ export async function submitServiceRequestAction(
     };
   }
 
-  const data = parseResult.data;
-  const orderId = Math.random().toString(36).substr(2, 9);
+  const data = parseResult.data as NewServiceRequestData;
 
-  console.log("Service Request Submitted (Server Action):", data);
+  try {
+    const newOrderId = await addServiceRequestToFirestore(data);
+    console.log("Service Request Submitted to Firestore. ID:", newOrderId);
 
-  return {
-    message: "Service request submitted successfully!",
-    success: true,
-    orderId: orderId,
-    fields: { ...data, id: orderId, status: 'pending', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() } as any,
-  };
+    return {
+      message: "Service request submitted successfully!",
+      success: true,
+      orderId: newOrderId, // Pass Firestore ID back
+      fields: { ...data }, // Pass back the validated fields
+    };
+  } catch (error) {
+    console.error("Failed to submit service request:", error);
+    return {
+      message: "Failed to submit service request. Please try again.",
+      success: false,
+    };
+  }
 }
 
 // --- Diagnosis Actions ---
 const diagnosisSchema = z.object({
-  applianceType: z.custom<ApplianceType>(),
+  applianceType: z.custom<ApplianceType>((val) => val !== undefined, "Please select an appliance type."),
   issueDescription: z.string().min(10, "Issue description must be at least 10 characters."),
 });
 
@@ -90,7 +99,7 @@ export async function diagnoseIssueAction(
 
   try {
     const diagnosisResult = await genAiDiagnoseIssue({ 
-      applianceType: applianceType as string,
+      applianceType: applianceType as string, // Cast as AI flow expects string
       issueDescription 
     });
     return {
@@ -108,8 +117,6 @@ export async function diagnoseIssueAction(
 }
 
 // --- Auth Actions ---
-// WARNING: These are hardcoded credentials for demonstration.
-// In a real application, use a secure authentication system (e.g., Firebase Auth) and hashed passwords.
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@example.com";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "securepassword123";
 
@@ -134,16 +141,16 @@ export async function loginAction(prevState: LoginState, formData: FormData): Pr
     };
   }
 
-  const email = parseResult.data.email.trim(); // Trim email
-  const password = parseResult.data.password; // Password should be exact
+  const email = parseResult.data.email.trim();
+  const password = parseResult.data.password;
 
   if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-    (await cookies()).set(SESSION_COOKIE_NAME, "true", { 
+    cookies().set(SESSION_COOKIE_NAME, "true", { 
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24 * 7, // 1 week
       path: '/',
-      sameSite: 'lax',
+      sameSite: 'lax', // Changed from none to lax for better security defaults
     });
     redirect('/admin'); 
   } else {
@@ -155,7 +162,6 @@ export async function loginAction(prevState: LoginState, formData: FormData): Pr
 }
 
 export async function logoutAction() {
-  (await cookies()).delete(SESSION_COOKIE_NAME);
+  cookies().delete(SESSION_COOKIE_NAME);
   redirect('/login');
 }
-

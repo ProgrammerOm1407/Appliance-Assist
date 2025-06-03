@@ -13,9 +13,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { submitServiceRequestAction, ServiceRequestFormState } from '@/lib/actions';
-import { applianceTypes, ApplianceType, ServiceRequest } from '@/lib/types';
+import { applianceTypes, ApplianceType } from '@/lib/types'; // Removed ServiceRequest as it's not directly used for new order data
 import { useToast } from '@/hooks/use-toast';
-import { addOrder as addOrderToStore } from '@/lib/orderStore';
+// Removed addOrderToStore as it's replaced by Firebase logic in actions.ts
 import { Loader2, Send, Smile, Frown } from 'lucide-react';
 
 const formSchema = z.object({
@@ -71,9 +71,9 @@ export default function ServiceRequestForm() {
         variant: state.success ? "default" : "destructive",
         action: state.success ? <Smile className="text-green-500" /> : <Frown className="text-red-500" />,
       });
-      if (state.success && state.fields) {
-        const newOrderData = state.fields as unknown as Omit<ServiceRequest, 'id' | 'createdAt' | 'updatedAt' | 'status'>;
-        addOrderToStore(newOrderData);
+      if (state.success) {
+        // The order is now added in the server action to Firestore.
+        // We can reset the form here.
         form.reset(); 
       }
     }
@@ -87,13 +87,16 @@ export default function ServiceRequestForm() {
 
   const onValidRHFSubmit = (data: ServiceRequestFormData) => {
      if (formRef.current) {
-      const formData = new FormData();
+      const formData = new FormData(formRef.current); // Pass the form element directly
+      // RHF data is already correct, but FormData from ref ensures all fields are captured if not all are RHF controlled
+      // For this specific case, data from RHF handleSubmit is sufficient and cleaner
+      const rhfFormData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
-          formData.append(key, String(value));
+          rhfFormData.append(key, String(value));
         }
       });
-      formAction(formData);
+      formAction(rhfFormData);
     }
   };
 
@@ -105,7 +108,7 @@ export default function ServiceRequestForm() {
       </CardHeader>
       <form
         ref={formRef}
-        onSubmit={form.handleSubmit(onValidRHFSubmit)}
+        onSubmit={form.handleSubmit(onValidRHFSubmit)} // Use RHF's handleSubmit
       >
         <CardContent className="space-y-4 sm:space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
